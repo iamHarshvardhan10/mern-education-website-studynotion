@@ -138,8 +138,8 @@ exports.login = async (req, res) => {
         }
 
         // check user exist or not 
-        const userExist = await User.findOne({ email }).populate('additionalDetails')
-        if (!userExist) {
+        const user = await User.findOne({ email }).populate('additionalDetails')
+        if (!user) {
             return res.status(400).json({
                 success: false,
                 message: 'User not found'
@@ -147,13 +147,13 @@ exports.login = async (req, res) => {
         }
 
         // generate JWT token and compate password
-        if (await bcrypt.compare(password, userExist.password)) {
-            const token = jwt.sign({ email: userExist.email, id: userExist._id, accountType: userExist.accountType }, process.env.JWT_SECRET, {
+        if (await bcrypt.compare(password, user.password)) {
+            const token = jwt.sign({ email: user.email, id: user._id, accountType: user.accountType }, process.env.JWT_SECRET, {
                 expiresIn: '24h'
             })
             // save token to user document in database
-            userExist.token = token;
-            userExist.password = undefined;
+            user.token = token;
+            user.password = undefined;
 
             // set cookie for token and return success response
             const options = {
@@ -163,7 +163,7 @@ exports.login = async (req, res) => {
             res.cookie('token', token, options).status(200).json({
                 success: true,
                 token,
-                userExist,
+                user,
                 message: 'User login Success'
             })
         } else {
