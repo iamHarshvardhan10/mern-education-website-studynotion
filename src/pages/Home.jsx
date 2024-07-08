@@ -7,7 +7,7 @@ import Banner from "../assets/Images/banner.mp4";
 import CodeBlocks from "../components/cors/Homepage/CodeBlocks";
 import TimelineSection from "../components/cors/Homepage/Timeline";
 import LearningSection from "../components/cors/Homepage/Learning";
-import ReviewSlider from "../components/cors/Homepage/ReviewSlider";
+import ReviewSlider from "../components/common/ReviewSlider";
 import InstructorSection from "../components/cors/Homepage/InstructorSection";
 import Footer from "../components/common/Footer";
 import Explore from "../components/cors/Homepage/Explore";
@@ -169,7 +169,7 @@ const Home = () => {
         <h1 className="text-center text-4xl font-semibold mt-8">
           Reviews from other learners
         </h1>
-        <ReviewSlider />
+         <ReviewSlider/>
       </div>
 
       {/* footer */}
