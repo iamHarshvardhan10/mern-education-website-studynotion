@@ -1,7 +1,9 @@
 const mongoose = require('mongoose')
 const mailSender = require('../utils/MailSender')
+const emailTemplate = require("../mail/templates/emailVerificationTemplate");
 
-const OTPScheam = new mongoose({
+
+const OTPSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true
@@ -20,8 +22,8 @@ const OTPScheam = new mongoose({
 // sending OTP via mail 
 const sendVerificationEmail = async (email, otp) => {
     try {
-        const mailResponse = await mailSender(email, 'Verification Mail', otp)
-        console.log(mailResponse)
+        const mailResponse = await mailSender(email, 'Verification EMail', emailTemplate(otp))
+        console.log(mailResponse.response)
     } catch (error) {
         console.log(error)
         throw error
@@ -30,10 +32,16 @@ const sendVerificationEmail = async (email, otp) => {
 
 // pre hook middleware before signin OTP will store in Database
 
-OTPScheam.pre('save', async function (next) {
-    await sendVerificationEmail(this.email, this.open)
-    next();
+OTPSchema.pre('save', async function (next) {
+    console.log("New Document Saved to database")
+    if (this.isNew) {
+
+        await sendVerificationEmail(this.email, this.otp)
+        next();
+    }
 })
 
 
-module.exports = mongoose.model('OTP', OTPScheam)
+const OTP = mongoose.model('OTP', OTPSchema)
+
+module.exports = OTP
