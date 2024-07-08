@@ -4,6 +4,7 @@ const Course = require('../models/Course')
 exports.createSection = async (req, res) => {
     try {
         // data fetch
+        console.log(req.body);
         const { sectionName, courseId } = req.body;
 
         // validate
@@ -18,18 +19,25 @@ exports.createSection = async (req, res) => {
         const newSection = await Section.create({ sectionName });
 
         // update course with sectio objectId
-        const updateCourse = await Course.findByIdAndUpdate(courseId, {
+        const updatedCourse = await Course.findByIdAndUpdate(courseId, {
             $push: {
-                courseContent: newSection._id
-            }
+                courseContent: newSection._id,
+            },
         },
             { new: true }
         )
+        .populate({
+            path: 'courseContent',
+            populate:{
+                path: 'SubSection',
+            }
+          })
+          .exec()
 
         return res.status(200).json({
             success: true,
             message: 'section created Successfully',
-            data: updateCourse
+            updatedCourse
         })
 
     } catch (error) {
@@ -47,21 +55,22 @@ exports.createSection = async (req, res) => {
 exports.updateSection = async (req, res) => {
     try {
         // data input
-        const { SectionName, sectionId } = req.body;
+        const { sectionName, sectionId } = req.body;
         // data validation
-        if (!SectionName || !sectionId) {
+        if (!sectionName || !sectionId) {
             return res.status(400).json({
                 success: false,
                 message: 'All Fields are Required'
             })
         }
         // update data
-        const section = await Section.findByIdAndUpdate(sectionId, { SectionName }, { new: true })
+        const section = await Section.findByIdAndUpdate(sectionId, { sectionName }, { new: true })
         // return res
 
         return res.status(200).json({
             success: true,
-            message: 'Section Update Successfully'
+            message: 'Section Update Successfully',
+            data:section
         })
 
     } catch (error) {
