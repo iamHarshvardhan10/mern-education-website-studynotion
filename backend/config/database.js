@@ -11,5 +11,7 @@ exports.connect = () => {
         console.log('Mongo Db Connected')
     }).catch((error) => {
         console.log('Mongo Connection Failed')
+        console.log(error)
+        process.exit(1)
     })
 }
