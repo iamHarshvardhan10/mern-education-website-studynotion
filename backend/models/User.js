@@ -48,12 +48,11 @@ const userSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        required: true
     },
     courseProgress: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'coureProgress'
+            ref: 'CourseProgress'
         }
     ],
 
