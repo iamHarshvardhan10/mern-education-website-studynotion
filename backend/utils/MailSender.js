@@ -9,21 +9,22 @@ const mailSender = async (email, title, body) => {
             auth: {
                 user: process.env.MAIL_USER,
                 pass: process.env.MAIL_PASS,
-            }
-
+            },
+            secure: false,
         })
 
         let info = await transporter.sendMail({
-            from: 'Harsh.devcodes || Harsh Bhosale',
+            from: `"Harsh.devcodes || Harsh Bhosale" <${process.env.MAIL_USER}>`,
             to: `${email}`,
             subject: `${title}`,
             html: `${body}`,
         })
-        console.log(info)
+        console.log(info.response)
         return info
 
     } catch (error) {
         console.log(error.message)
+        return error.message
     }
 }
 
