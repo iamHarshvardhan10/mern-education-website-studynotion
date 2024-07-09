@@ -447,10 +447,29 @@ exports.getInstructorCourses = async (req, res) => {
       },
     })
 
+    // get time Duration 
+
+    let totalDurationInSeconds = 0
+    if (Array.isArray(instructorCourses.courseContent)) {
+      instructorCourses.courseContent.forEach((content) => {
+        // Ensure subSection exists and is an array before using forEach
+        if (Array.isArray(content.SubSection)) {
+          content.SubSection.forEach((SubSection) => {
+            // Parse timeDuration and handle potential NaN values
+            const timeDurationInSeconds = parseInt(SubSection.timeDuration, 10) || 0;
+            totalDurationInSeconds += timeDurationInSeconds;
+          });
+        }
+      });
+    }
+
+    const totalDuration = convertSecondsToDuration(totalDurationInSeconds)
+
     // Return the instructor's courses
     res.status(200).json({
       success: true,
-      data: instructorCourses,
+      totalDuration,
+      data:instructorCourses,
     })
   } catch (error) {
     console.error(error)
