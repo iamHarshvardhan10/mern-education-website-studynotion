@@ -16,7 +16,7 @@ exports.createRating = async (req, res) => {
             {
                 _id: courseId,
                 studentEnrolled: {
-                    $eleMatch: {
+                    $elemMatch: {
                         $eq: userId
 
                     }
