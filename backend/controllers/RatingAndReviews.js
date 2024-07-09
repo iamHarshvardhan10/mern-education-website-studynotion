@@ -43,7 +43,8 @@ exports.createRating = async (req, res) => {
         }
         // creating rating and review
         const ratingReview = await RatingAndReview.create({
-            rating: review,
+            rating,
+            review,
             course: courseId,
             user: userId
         })
@@ -59,7 +60,8 @@ exports.createRating = async (req, res) => {
         return res.status(200).json({
             success: true,
             message: 'Rating review created successfully',
-            ratingReview
+            ratingReview,
+            courseReview
         })
     } catch (error) {
         return res.status(500).json({
@@ -122,7 +124,7 @@ exports.getAverageRating = async (req, res) => {
 
 // get AllRating
 
-exports.getAllRating = async (req, res) => {
+exports.getAllRatingReview = async (req, res) => {
     try {
         const allReview = await RatingAndReview.find({}).sort({ rating: 'desc' }).populate({ path: 'user', select: 'firstName lastName email image' }).populate({ path: 'course', select: 'courseName' }).exec()
 
